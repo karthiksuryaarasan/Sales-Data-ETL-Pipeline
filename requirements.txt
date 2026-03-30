@@ -3,3 +3,7 @@ sqlalchemy
 psycopg2-binary
 pytest
 python-dotenv
+pyspark
+psycopg2-binary
+sqlalchemy
+pytest

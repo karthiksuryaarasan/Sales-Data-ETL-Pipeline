@@ -6,7 +6,6 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     services:
@@ -18,15 +17,16 @@ jobs:
           POSTGRES_DB: sales_db
         ports:
           - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
 
     steps:
 
     - uses: actions/checkout@v3
+
+    - name: Setup Java (Required for PySpark)
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '11'
 
     - name: Setup Python
       uses: actions/setup-python@v4
@@ -36,6 +36,10 @@ jobs:
     - name: Install dependencies
       run: |
         pip install -r requirements.txt
+
+    - name: Run Unit Tests
+      run: |
+        pytest
 
     - name: Run ETL
       run: |
