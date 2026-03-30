@@ -17,12 +17,17 @@ jobs:
           POSTGRES_DB: sales_db
         ports:
           - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
 
     - uses: actions/checkout@v3
 
-    - name: Setup Java (Required for PySpark)
+    - name: Setup Java
       uses: actions/setup-java@v3
       with:
         distribution: 'temurin'
@@ -33,7 +38,7 @@ jobs:
       with:
         python-version: 3.9
 
-    - name: Install dependencies
+    - name: Install Dependencies
       run: |
         pip install -r requirements.txt
 
@@ -42,5 +47,7 @@ jobs:
         pytest
 
     - name: Run ETL
+      env:
+        PYSPARK_PYTHON: python
       run: |
         python src/etl.py
